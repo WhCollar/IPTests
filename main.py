@@ -5,7 +5,7 @@ from generator_of_tasks import *
 
 root = Tk()
 root.title("TestGenerate")
-root.geometry("500x500")
+root.geometry("500x800")
 root.resizable(width=False, height=False)
 values = []
 for keys, value in type_of_tasks.items():
@@ -16,7 +16,7 @@ Label(text="Тип задачи:").place(x=8, y=8)
 selector = Combobox(root, values=values, width=60, state="readonly")
 selector.place(x=75, y=8)
 
-widget_text_result = Text(root, wrap=WORD, width=60, height=26)
+widget_text_result = Text(root, wrap=WORD, width=60, height=45)
 
 
 def button_generate():

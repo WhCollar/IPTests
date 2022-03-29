@@ -28,10 +28,10 @@ def ip_generator():
 
 def host_subnet_num_generator(type_of_ip):
     if type_of_ip == 'C':
-        num = randint(24, 31)
+        num = randint(25, 31)
         return all_mask[num]["addresses"], all_mask[num]["subnets"], all_mask[num]["decimal notation"]
     elif type_of_ip == 'B':
-        num = randint(16, 23)
+        num = randint(17, 23)
         return all_mask[num]["addresses"], all_mask[num]["subnets"], all_mask[num]["decimal notation"]
     elif type_of_ip == 'A':
         num = randint(9, 15)
@@ -67,25 +67,94 @@ def binary_notation_str(mask_list):
     result = ''
     for el in mask_list:
         if int(el) != 0:
-            result += f".{int(el):b}"
+            text = f"{int(el):b}"
+            if len(text) < 8:
+                txt_0 = '0' * (8 - len(text))
+                text = txt_0 + text
+            result += f'.{text}'
         else:
             result += ".00000000"
     return result[1:]
 
 
-def solution_helper(host_num, mask_list):
+def under_solution(type_of_ip, host, ip):
     result = ''
-    result += f"?"
+    res_ip_bin_str = binary_notation_str([ip[0]])
+    res_ip_decimal_list = [ip[0]]
+    if type_of_ip == 'C':
+        pass
+    elif type_of_ip == 'B':
+        pass
+    elif type_of_ip == 'A':
+        if host > 256:
+            if host > 65536:
+                num = int(host) // int(65536)
+                host = host % 65536
+                result += f"Так как номер хоста больше чем 65536(256*256), мы делим нацело номер хоста на 65536 и " \
+                          f"получаем {num}, переводим в двоичный вид ({num:b}) и прибавляем ко второму октету.\n" \
+                          f"Второй октет + Результат деления = Второй октет адреса хоста\n" \
+                          f"{ip[1]:b} + {num:b} = {ip[1] + num:b}\n\n"
+                res_ip_bin_str += f".{ip[1] + num:b}"
+                res_ip_decimal_list.append(int(f"{ip[1] + num:b}", 2))
+                text_bool = 1
+                if host > 256:
+                    if text_bool == 1:
+                        num = host // 256
+                        num_bin_str = f"{num:b}"
+                        if len(num_bin_str) < 8:
+                            txt_0 = '0' * (8 - len(num_bin_str))
+                            num_bin_str = txt_0 + num_bin_str
+                        result += f"Остаток от целочисленного деления на 65536 равен {host} и всё ещё больше 256, "
+                        host = host % 256
+                        result += f"следовательно, мы делим его нацело на 256, получаем {num} и сотаток {host}." \
+                                  f"Теперь переводим результат целочисленного деления в двоичный вид ({num:b}) и " \
+                                  f"прибавляем к третьему октету.\n" \
+                                  f"Третий октет + Результат деления = Третий октет адреса хоста\n" \
+                                  f"00000000 + {num:b} = {num_bin_str}\n\n"
+                        res_ip_bin_str += f".{num_bin_str}"
+                        res_ip_decimal_list.append(int(num_bin_str, 2))
+                        host_bin_str = f"{host:b}"
+                        if len(host_bin_str) < 8:
+                            txt_0 = '0' * (8 - len(host_bin_str))
+                            host_bin_str = txt_0 + host_bin_str
+                        result += f"Последним шагом будет расчёт четвёртого октета, для этого переведём остаток в " \
+                                  f"двоичный вид ({host:b}) и прибавим к четвёртому откету.\n" \
+                                  f"Четвёртый октет + Результат деления = Третий октет адреса хоста\n" \
+                                  f"00000000 + {host:b} = {host_bin_str}\n\n"
+                        res_ip_bin_str += f".{host_bin_str}"
+                        res_ip_decimal_list.append(int(host_bin_str, 2))
+                        result += f"IP адрес хоста в двоичном виде: \n{res_ip_bin_str}\n" \
+                                  f"IP адрес хоста в десятичном виде: \n{'.'.join(map(str, res_ip_decimal_list))}\n"
+        else:
+            pass
     return result
 
 
-def solution(decimal_notation, subnet_num, type_of_ip, host_num):
+
+def solution(decimal_notation, subnet_num, type_of_ip, host, ip, subnet):
     result = ''
-    result += f"Класс подсети {type_of_ip} следовательно дефолтная маска подсети будет: " \
-              f"{binary_notation_str(default_mask[type_of_ip])}\n" \
-              f"Теперь переходим к подбору, по ходу заполняя октеты:" \
-              f"Ближайшая степень двойки к {host_num} это {int(log2(int(host_num)))}" \
-              f":"
+    result += f"Класс подсети класса {type_of_ip} следовательно дефолтная маска подсети будет: " \
+              f"{binary_notation_str(default_mask[type_of_ip])}\n\n"
+    if type_of_ip == "A":
+        result += f"Сначала расчитаем адрес подстеи:\n" \
+                  f"256/{subnet_num}={int(256/int(subnet_num))} - шаг адреса подсети\n"
+        if int(subnet_num) < 4:
+            result += f"1: {ip.split('.')[0]}.{0}.0.0\n" \
+                      f"2: {ip.split('.')[0]}.{128}.0.0\n"
+        else:
+            result += f"1: {ip.split('.')[0]}.{0}.0.0\n" \
+                      f"2: {ip.split('.')[0]}.{int(256/int(subnet_num))}.0.0\n" \
+                      f"n: ...\n" \
+                      f"{subnet_num}: {ip.split('.')[0]}.{int(256/int(subnet_num))*(int(subnet) - 1)}.0.0\n"
+        result += f"В двоичном виде адрес подсети будет выглядеть следующим образом: " \
+                  f"{binary_notation_str([ip.split('.')[0], int(256/int(subnet_num))*(int(subnet) - 1), '0', '0'])}\n\n" \
+                  f"{under_solution(type_of_ip, int(host), [ip.split('.')[0], int(256/int(subnet_num))*(int(subnet) - 1), '0', '0'])}"
+
+    elif type_of_ip == "B":
+        pass
+    elif type_of_ip == "C":
+        pass
+
     return result
 
 
@@ -99,5 +168,5 @@ def task_3():
     return f"Сеть {ip} разбита на {subnet_num} подсети(ей). " \
            f"Каким будет последний октет {host} выданного IP-адреса в " \
            f"{subnet} подсети? \n \n" \
-           f"Решение: {solution(decimal_notation, subnet_num, type_of_ip, host_num)}\n \n " \
+           f"Решение:\n{solution(decimal_notation, subnet_num, type_of_ip, host, ip, subnet)}\n \n " \
            f"Ответ: {answer}"
