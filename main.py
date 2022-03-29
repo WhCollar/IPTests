@@ -36,7 +36,7 @@ def button_copy_task():
 def button_copy_answer():
     if not widget_text_result.get("1.0", END) == "\n":
         root.clipboard_clear()
-        answer_text = widget_text_result.get("1.0", END).split('\n')[2].split(' ')[1]
+        answer_text = widget_text_result.get("1.0", END).split(' ')[-1]
         root.clipboard_append(answer_text)
         root.update()
         show_message("Ответ скопирован")

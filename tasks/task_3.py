@@ -1,4 +1,6 @@
 import random
+from math import log2
+
 from config import *
 from random import randint
 
@@ -26,14 +28,14 @@ def ip_generator():
 
 def host_subnet_num_generator(type_of_ip):
     if type_of_ip == 'C':
-        num = randint(25, 30)
-        return all_mask[num]["addresses"], all_mask[num]["subnets"]
+        num = randint(24, 31)
+        return all_mask[num]["addresses"], all_mask[num]["subnets"], all_mask[num]["decimal notation"]
     elif type_of_ip == 'B':
-        num = randint(17, 23)
-        return all_mask[num]["addresses"], all_mask[num]["subnets"]
+        num = randint(16, 23)
+        return all_mask[num]["addresses"], all_mask[num]["subnets"], all_mask[num]["decimal notation"]
     elif type_of_ip == 'A':
         num = randint(9, 15)
-        return all_mask[num]["addresses"], all_mask[num]["subnets"]
+        return all_mask[num]["addresses"], all_mask[num]["subnets"], all_mask[num]["decimal notation"]
 
 
 def calculation_last_octet(type_of_ip, subnet_num, subnet, host):
@@ -61,9 +63,35 @@ def calculation_last_octet(type_of_ip, subnet_num, subnet, host):
             return host
 
 
+def binary_notation_str(mask_list):
+    result = ''
+    for el in mask_list:
+        if int(el) != 0:
+            result += f".{int(el):b}"
+        else:
+            result += ".00000000"
+    return result[1:]
+
+
+def solution_helper(host_num, mask_list):
+    result = ''
+    result += f"?"
+    return result
+
+
+def solution(decimal_notation, subnet_num, type_of_ip, host_num):
+    result = ''
+    result += f"Класс подсети {type_of_ip} следовательно дефолтная маска подсети будет: " \
+              f"{binary_notation_str(default_mask[type_of_ip])}\n" \
+              f"Теперь переходим к подбору, по ходу заполняя октеты:" \
+              f"Ближайшая степень двойки к {host_num} это {int(log2(int(host_num)))}" \
+              f":"
+    return result
+
+
 def task_3():
     ip, type_of_ip = ip_generator()
-    host_num, subnet_num = host_subnet_num_generator(type_of_ip)
+    host_num, subnet_num, decimal_notation = host_subnet_num_generator(type_of_ip)
     subnet = randint(1, int(subnet_num))
     host = randint(1, int(host_num))
     answer = calculation_last_octet(type_of_ip, int(subnet_num), subnet, host)
@@ -71,4 +99,5 @@ def task_3():
     return f"Сеть {ip} разбита на {subnet_num} подсети(ей). " \
            f"Каким будет последний октет {host} выданного IP-адреса в " \
            f"{subnet} подсети? \n \n" \
+           f"Решение: {solution(decimal_notation, subnet_num, type_of_ip, host_num)}\n \n " \
            f"Ответ: {answer}"
