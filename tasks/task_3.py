@@ -184,19 +184,23 @@ def solution(subnet_num, type_of_ip, host, ip, subnet):
 
 def universal_solution(ip_str, host):
     ip_list = list(''.join(ip_str.split('.')))
-    print(ip_list, " ", len(ip_list))
+    res = 'Теперь расчитываем IP.\n'
     while host > 0:
-        print(math.floor(log2(host)))
         index = -abs(math.floor(log2(host))) - 1
         ip_list[index] = '1'
+        none_1 = host
+        none_2 = ''.join(ip_list[:8]) + '.' + ''.join(ip_list[8:16]) + '.' + ''.join(ip_list[16:24]) + '.' + ''.join(ip_list[24:32])
         host = host - pow(2, int(log2(host)))
-        print(f"{host}\n")
+        res += f'\nБлижайшая степень двойки к {none_1} это {pow(2, int(log2(none_1)))}=2^{int(log2(none_1))}, ' \
+               f'следовательно заменяем {int(log2(none_1))} бит ' \
+               f'на 1 в двоичном IP подсети, ведя отсчёт с права на лево, начиная с 0.\n' \
+               f'Получим: {none_2}\n'
     ip = ''.join(ip_list[:8]) + '.' + ''.join(ip_list[8:16]) + '.' + ''.join(ip_list[16:24]) + '.' + ''.join(ip_list[24:32])
     ip_decimal = str(int(''.join(ip_list[:8]), 2)) + '.' + str(int(''.join(ip_list[8:16]), 2)) + '.' + str(int(''.join(ip_list[16:24]), 2)) + '.' + str(int(''.join(ip_list[24:32]), 2))
     answer = str(int(''.join(ip_list[24:32]), 2))
-    res = f'{ip}\n' \
-          f'{ip_decimal}\n\n' \
-          f'Ответ: {answer}'
+    res += f'\n{ip}\n' \
+           f'{ip_decimal}\n\n' \
+           f'Ответ: {answer}'
     return res
 
 
