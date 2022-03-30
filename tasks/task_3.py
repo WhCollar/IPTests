@@ -191,9 +191,9 @@ def universal_solution(ip_str, host):
         ip_list[index] = '1'
         host = host - pow(2, int(log2(host)))
         print(f"{host}\n")
-    ip = ''.join(ip_list[:7]) + '.' + ''.join(ip_list[7:15]) + '.' + ''.join(ip_list[15:23]) + '.' + ''.join(ip_list[23:31])
-    ip_decimal = str(int(''.join(ip_list[:7]), 2)) + '.' + str(int(''.join(ip_list[7:15]), 2)) + '.' + str(int(''.join(ip_list[15:23]), 2)) + '.' + str(int(''.join(ip_list[23:31]), 2))
-    answer = str(int(''.join(ip_list[23:31]), 2))
+    ip = ''.join(ip_list[:8]) + '.' + ''.join(ip_list[8:16]) + '.' + ''.join(ip_list[16:24]) + '.' + ''.join(ip_list[24:32])
+    ip_decimal = str(int(''.join(ip_list[:8]), 2)) + '.' + str(int(''.join(ip_list[8:16]), 2)) + '.' + str(int(''.join(ip_list[16:24]), 2)) + '.' + str(int(''.join(ip_list[24:32]), 2))
+    answer = str(int(''.join(ip_list[24:32]), 2))
     res = f'{ip}\n' \
           f'{ip_decimal}\n\n' \
           f'Ответ: {answer}'
@@ -209,4 +209,5 @@ def task_3():
     return f"Сеть {ip} разбита на {subnet_num} подсети(ей). " \
            f"Каким будет последний октет {host} выданного IP-адреса в " \
            f"{subnet} подсети? \n \n" \
-           f"Решение:\n{solution( subnet_num, type_of_ip, host, ip, subnet)}"
+           f"Решение:\n{solution( subnet_num, type_of_ip, host, ip, subnet)}\n" \
+           f"Ответ: {calculation_last_octet(type_of_ip, int(subnet_num), subnet, host)}"
