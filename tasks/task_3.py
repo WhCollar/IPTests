@@ -1,3 +1,4 @@
+import math
 import random
 from math import log2
 
@@ -130,8 +131,7 @@ def under_solution(type_of_ip, host, ip):
     return result
 
 
-
-def solution(decimal_notation, subnet_num, type_of_ip, host, ip, subnet):
+def solution(subnet_num, type_of_ip, host, ip, subnet):
     result = ''
     result += f"Класс подсети класса {type_of_ip} следовательно дефолтная маска подсети будет: " \
               f"{binary_notation_str(default_mask[type_of_ip])}\n\n"
@@ -145,17 +145,59 @@ def solution(decimal_notation, subnet_num, type_of_ip, host, ip, subnet):
             result += f"1: {ip.split('.')[0]}.{0}.0.0\n" \
                       f"2: {ip.split('.')[0]}.{int(256/int(subnet_num))}.0.0\n" \
                       f"n: ...\n" \
-                      f"{subnet_num}: {ip.split('.')[0]}.{int(256/int(subnet_num))*(int(subnet) - 1)}.0.0\n"
+                      f"{subnet}: {ip.split('.')[0]}.{int(256/int(subnet_num))*(int(subnet) - 1)}.0.0\n"
         result += f"В двоичном виде адрес подсети будет выглядеть следующим образом: " \
                   f"{binary_notation_str([ip.split('.')[0], int(256/int(subnet_num))*(int(subnet) - 1), '0', '0'])}\n\n" \
-                  f"{under_solution(type_of_ip, int(host), [ip.split('.')[0], int(256/int(subnet_num))*(int(subnet) - 1), '0', '0'])}"
+                  f"{universal_solution(binary_notation_str([ip.split('.')[0], int(256/int(subnet_num))*(int(subnet) - 1), '0', '0']), host)}"
 
     elif type_of_ip == "B":
-        pass
+        result += f"Сначала расчитаем адрес подстеи:\n" \
+                  f"256/{subnet_num}={int(256 / int(subnet_num))} - шаг адреса подсети\n"
+        if int(subnet_num) < 4:
+            result += f"1: {ip.split('.')[0]}.{ip.split('.')[1]}.{0}.0\n" \
+                      f"2: {ip.split('.')[0]}.{ip.split('.')[1]}.{128}.0\n"
+        else:
+            result += f"1: {ip.split('.')[0]}.{ip.split('.')[1]}.0.0\n" \
+                      f"2: {ip.split('.')[0]}.{ip.split('.')[1]}.{int(256 / int(subnet_num))}.0\n" \
+                      f"n: ...\n" \
+                      f"{subnet}: {ip.split('.')[0]}.{ip.split('.')[1]}.{int(256 / int(subnet_num)) * (int(subnet) - 1)}.0\n"
+        result += f"В двоичном виде адрес подсети будет выглядеть следующим образом: " \
+                  f"{binary_notation_str([ip.split('.')[0], ip.split('.')[1], int(256 / int(subnet_num)) * (int(subnet) - 1), '0'])}\n\n" \
+                  f"{universal_solution(binary_notation_str([ip.split('.')[0], ip.split('.')[1], int(256 / int(subnet_num)) * (int(subnet) - 1), '0']), host)}"
     elif type_of_ip == "C":
-        pass
+        result += f"Сначала расчитаем адрес подстеи:\n" \
+                  f"256/{subnet_num}={int(256 / int(subnet_num))} - шаг адреса подсети\n"
+        if int(subnet_num) < 4:
+            result += f"1: {ip.split('.')[0]}.{ip.split('.')[1]}.{ip.split('.')[2]}.{0}\n" \
+                      f"2: {ip.split('.')[0]}.{ip.split('.')[1]}.{ip.split('.')[2]}.{128}\n"
+        else:
+            result += f"1: {ip.split('.')[0]}.{ip.split('.')[1]}.{ip.split('.')[2]}.{0}\n" \
+                      f"2: {ip.split('.')[0]}.{ip.split('.')[1]}.{ip.split('.')[2]}.{int(256 / int(subnet_num))}\n" \
+                      f"n: ...\n" \
+                      f"{subnet}: {ip.split('.')[0]}.{ip.split('.')[1]}.{ip.split('.')[2]}.{int(256 / int(subnet_num)) * (int(subnet) - 1)}\n"
+        result += f"В двоичном виде адрес подсети будет выглядеть следующим образом: " \
+                  f"{binary_notation_str([ip.split('.')[0], ip.split('.')[1], ip.split('.')[2], int(256 / int(subnet_num)) * (int(subnet) - 1)])}\n\n" \
+                  f"{universal_solution(binary_notation_str([ip.split('.')[0], ip.split('.')[1], ip.split('.')[2], int(256 / int(subnet_num)) * (int(subnet) - 1)]), host)}"
 
     return result
+
+
+def universal_solution(ip_str, host):
+    ip_list = list(''.join(ip_str.split('.')))
+    print(ip_list)
+    while host > 0:
+        print(math.floor(log2(host)))
+        index = -abs(math.floor(log2(host))) - 1
+        ip_list[index] = 1
+        host = host - pow(2, int(log2(host)))
+        print(f"{host}\n")
+    ip = []
+    for i in range(4):
+        for i in range(8):
+            ip.append(ip_list[i])
+        ip.append('.')
+    print(ip)
+    return ''.join(ip)[:-1]
 
 
 def task_3():
@@ -168,5 +210,5 @@ def task_3():
     return f"Сеть {ip} разбита на {subnet_num} подсети(ей). " \
            f"Каким будет последний октет {host} выданного IP-адреса в " \
            f"{subnet} подсети? \n \n" \
-           f"Решение:\n{solution(decimal_notation, subnet_num, type_of_ip, host, ip, subnet)}\n \n " \
+           f"Решение:\n{solution( subnet_num, type_of_ip, host, ip, subnet)}\n \n " \
            f"Ответ: {answer}"
