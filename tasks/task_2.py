@@ -74,7 +74,7 @@ def task_2():
     ip, type_of_ip = ip_generator()
     host_num, subnet_num, decimal_notation = host_subnet_num_generator(type_of_ip)
 
-    task_text = f'Кокое максимальное количество хостов при разбиении сети {ip} на {int(subnet_num)} подсетей? \n \n' \
+    task_text = f'Какое максимальное количество хостов при разбиении сети {ip} на {int(subnet_num)} подсетей? \n \n' \
                 f'Решение: \n {solution(decimal_notation, subnet_num, type_of_ip, host_num)} \n \n' \
                 f'Ответ: {host_num}'
 
