@@ -5,7 +5,7 @@ from generator_of_tasks import *
 
 root = Tk()
 root.title("TestGenerate")
-root.geometry("500x800")
+root.geometry("500x500")
 root.resizable(width=False, height=False)
 values = []
 for keys, value in type_of_tasks.items():
