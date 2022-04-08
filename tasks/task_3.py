@@ -115,12 +115,12 @@ def task_3():
     subnet = 0
     host = 0
     if type_of_ip == 'A':
-        subnet_num = pow(2, randint(17, 22))
-        subnet = randint(pow(2, 17), pow(2, 22))
+        subnet_num = pow(2, randint(18, 22))
+        subnet = randint(pow(2, 17), subnet_num)
         host = randint(1, 3)
     elif type_of_ip == 'B':
-        subnet_num = pow(2, randint(9, 14))
-        subnet = randint(pow(2, 9), pow(2, 14))
+        subnet_num = pow(2, randint(10, 14))
+        subnet = randint(pow(2, 9), subnet_num)
         host = randint(1, 3)
     else:
         subnet = randint(1, int(subnet_num))
